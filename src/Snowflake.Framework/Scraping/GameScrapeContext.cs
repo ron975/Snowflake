@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using Snowflake.Model.Game;
 using Snowflake.Model.Game.LibraryExtensions;
 using Snowflake.Romfile;
+using Snowflake.Romfile.Naming;
 
 namespace Snowflake.Scraping
 {

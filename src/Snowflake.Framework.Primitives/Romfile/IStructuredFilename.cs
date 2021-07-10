@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Snowflake.Romfile.Naming;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -58,31 +59,5 @@ namespace Snowflake.Romfile
         /// Gets the source filename
         /// </summary>
         string OriginalFilename { get; }
-    }
-
-    /// <summary>
-    /// Types of filename conventions
-    /// </summary>
-    public enum NamingConvention
-    {
-        /// <summary>
-        /// No-Intro Naming Convention
-        /// </summary>
-        NoIntro,
-
-        /// <summary>
-        /// TOSEC Naming Convention
-        /// </summary>
-        TheOldSchoolEmulationCenter,
-
-        /// <summary>
-        /// GoodTools naming convention
-        /// </summary>
-        GoodTools,
-
-        /// <summary>
-        /// Unknown naming convention, possibly invalid filename
-        /// </summary>
-        Unknown,
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Snowflake.Romfile.Extensions
+namespace Snowflake.Romfile.Naming
 {
     public static class StringExtensions
     {

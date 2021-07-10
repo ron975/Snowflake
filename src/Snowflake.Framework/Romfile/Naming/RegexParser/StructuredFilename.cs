@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.SqlServer.Server;
-using Snowflake.Romfile.Extensions;
 using Snowflake.Romfile.Tokenizer;
 
-namespace Snowflake.Romfile
+namespace Snowflake.Romfile.Naming
 {
     public sealed class StructuredFilename : IStructuredFilename
     {
@@ -31,24 +27,24 @@ namespace Snowflake.Romfile
 
         public StructuredFilename(string originalFilename)
         {
-            this.OriginalFilename = Path.GetFileName(originalFilename);
+            OriginalFilename = Path.GetFileName(originalFilename);
 
             // todo: expose tokens to api
             (NamingConvention namingConvention, IEnumerable<StructuredFilenameToken> tokens) = GetBestMatch();
-            this.Title = StructuredFilename.ParseTitle(tokens.FirstOrDefault(t => t.Type == FieldType.Title)?.Value ?? "Unknown??!?");
-            this.NamingConvention = namingConvention;
-            this.RegionCode = string.Join('-', tokens.Where(t => t.Type == FieldType.Country).Select(t => t.Value));
-            if (string.IsNullOrEmpty(this.RegionCode))
+            Title = ParseTitle(tokens.FirstOrDefault(t => t.Type == FieldType.Title)?.Value ?? "Unknown??!?");
+            NamingConvention = namingConvention;
+            RegionCode = string.Join('-', tokens.Where(t => t.Type == FieldType.Country).Select(t => t.Value));
+            if (string.IsNullOrEmpty(RegionCode))
             {
-                this.RegionCode = "ZZ";
+                RegionCode = "ZZ";
             }
 
-            this.Year = tokens.FirstOrDefault(t => t.Type == FieldType.Date)?.Value.Split("-")[0] ?? "XXXX";
+            Year = tokens.FirstOrDefault(t => t.Type == FieldType.Date)?.Value.Split("-")[0] ?? "XXXX";
         }
 
         private (NamingConvention namingConvention, IEnumerable<StructuredFilenameToken> tokens) GetBestMatch()
         {
-            var tokens = new StructuredFilenameTokenizer(this.OriginalFilename);
+            var tokens = new StructuredFilenameTokenizer(OriginalFilename);
             var brackets = tokens.GetBracketTokens().ToList();
             var parens = tokens.GetParensTokens().ToList();
             var title = tokens.GetTitle();
@@ -70,9 +66,9 @@ namespace Snowflake.Romfile
 
             var aggregate = new List<(IEnumerable<StructuredFilenameToken> tokens, int uniqueDatatypes)>()
             {
-                {(goodToolsTokens, StructuredFilename.GetUniqueDatatypeCount(goodToolsTokens))},
-                {(noIntroTokens, StructuredFilename.GetUniqueDatatypeCount(noIntroTokens))},
-                {(tosecTokens, StructuredFilename.GetUniqueDatatypeCount(tosecTokens))},
+                {(goodToolsTokens, GetUniqueDatatypeCount(goodToolsTokens))},
+                {(noIntroTokens, GetUniqueDatatypeCount(noIntroTokens))},
+                {(tosecTokens, GetUniqueDatatypeCount(tosecTokens))},
             };
 
             var bestMatch = aggregate.OrderByDescending(p => p.uniqueDatatypes).First().tokens;
